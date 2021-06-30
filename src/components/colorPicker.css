@@ -1,0 +1,7 @@
+.colorPicker__option {
+  display: inline-block;
+  width: 80px;
+  height: 40px;
+  outline: 1px solid green;
+  text-align: center;
+}
