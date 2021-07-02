@@ -1,0 +1,22 @@
+.Counter {
+  width: 600px;
+  margin: 20px;
+  padding: 50px;
+  border: 1px solid black;
+  text-align: center;
+  background-color: #fff;
+}
+.value {
+  display: inline-block;
+  margin-bottom: 20px;
+  font-size: 30px;
+}
+button {
+  background-color: rgb(57, 132, 167);
+  color: aliceblue;
+  padding: 10px;
+  font-size: 30px;
+}
+button:first-child {
+  margin-right: 20px;
+}

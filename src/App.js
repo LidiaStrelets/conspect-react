@@ -1,52 +1,65 @@
-// import logo from './logo.svg';
-// import './App.css';
-import React from "react";
-import Gallery from "./components/PaintingsGallery";
-import paintingsData from "./paintings.json";
-import Panel from "./components/Panel";
-import ColorPicker from "./components/colorPicker";
+import "./App.css";
+import React, { Component } from "react";
+import Counter from "./components/Counter";
+import Dropdown from "./components/Dropdown";
+import ColorPicker from "./components/ColorPicker";
+import TodoList from "./components/TodoList";
+import todoItems from "./todoItems.json";
+import colorPickerOptions from "./colorPickerOptions.json";
 
-const colorPickerOptions = [
-  { label: "red", color: "#F44336" },
-  { label: "green", color: "#4CAF50" },
-  { label: "blue", color: "#2196F3" },
-  { label: "grey", color: "#607D8B" },
-  { label: "pink", color: "#E91E63" },
-  { label: "indigo", color: "#3F51B5" },
-];
+class App extends Component {
+  state = {
+    todoItems,
+  };
 
-function App() {
-  return (
-    <div className="App">
-      <ColorPicker colors={colorPickerOptions} />
-      <Panel title="Последние новости">
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Magnam,
-          obcaecati dolorum assumenda vitae aspernatur, aliquid numquam
-          explicabo, facere tenetur unde dolorem quo! Sit iusto natus at,
-          aliquam, repellendus repellat ipsa eligendi dolorem tempore atque
-          reprehenderit nulla magnam reiciendis, aliquid minus tenetur ipsam
-          fuga. Quas vel, sunt voluptatum debitis incidunt numquam?
-        </p>
+  removeTask = (taskId) => {
+    this.setState((prevState) => ({
+      todoItems: prevState.todoItems.filter((item) => item.id !== taskId),
+    }));
+  };
 
-        <a href="">Читать...</a>
-      </Panel>
+  changeTaskStatus = (index, status) => {
+    this.setState((prevState) => ({
+      todoItems: prevState.todoItems.map((item, idx) =>
+        idx === index ? { ...item, completed: !status } : item
+      ),
+    }));
+  };
 
-      <Panel>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde,
-          explicabo aperiam architecto perspiciatis quae amet. Porro magni
-          laudantium aspernatur debitis deserunt ipsam. Nostrum id accusamus
-          praesentium eum incidunt tenetur cum!
-        </p>
-      </Panel>
-      <header className="App-header">
-        <h1>My app</h1>
+  render() {
+    const { todoItems } = this.state;
 
-        <Gallery paintings={paintingsData} />
-      </header>
-    </div>
-  );
+    return (
+      <div className="App">
+        <div>Component state</div>
+        <TodoList
+          todoItems={todoItems}
+          removeTask={this.removeTask}
+          changeTaskStatus={this.changeTaskStatus}
+        />
+        <div>
+          <p className="task-quantity">Tasks in list: {todoItems.length}</p>
+          <p className="task-quantity">
+            Done:{" "}
+            {todoItems.reduce(
+              (sum, item) => (item.completed ? sum + 1 : sum),
+              0
+            )}
+          </p>
+          <p className="task-quantity">
+            NOT done:{" "}
+            {todoItems.reduce(
+              (sum, item) => (!item.completed ? sum + 1 : sum),
+              0
+            )}
+          </p>
+        </div>
+        <ColorPicker options={colorPickerOptions} />
+        <Dropdown />
+        <Counter />
+      </div>
+    );
+  }
 }
 
 export default App;
