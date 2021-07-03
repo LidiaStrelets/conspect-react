@@ -3,7 +3,7 @@ import styles from "./ColorPicker.module.css";
 
 class ColorPicker extends Component {
   state = {
-    activeOptionIndex: 5,
+    activeOptionIndex: -1,
   };
   makeoptionClasslist = (index) => {
     const optionClasslist = [styles.option];

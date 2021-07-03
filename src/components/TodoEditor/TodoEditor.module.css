@@ -1,0 +1,14 @@
+.textarea {
+  width: 500px;
+  height: 200px;
+  padding: 30px;
+  font-size: 30px;
+}
+.addForm {
+  display: flex;
+  flex-direction: column;
+}
+.saveBtn {
+  width: 150px;
+  margin-top: 30px;
+}
