@@ -13,19 +13,3 @@
 .item:not(:last-child) {
   margin-bottom: 20px;
 }
-.text {
-  margin: 0;
-  margin-right: 20px;
-}
-.wrapper {
-  display: flex;
-  align-items: center;
-}
-.status {
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  margin-right: 10px;
-  background-color: red;
-}

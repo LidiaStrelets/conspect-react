@@ -1,23 +1,17 @@
 import React from "react";
 import styles from "./TodoList.module.css";
+import ToDoItem from "../ToDoItem";
 
 const TodoList = ({ todoItems, removeTask, changeTaskStatus, filter }) => (
   <ul className={styles.list}>
     {todoItems.map(({ id, text, completed }, index) => (
       <li key={id} className={styles.item}>
-        <div className={styles.wrapper}>
-          <span
-            onClick={() => {
-              changeTaskStatus(index);
-            }}
-            className={styles.status}
-            style={{ backgroundColor: completed && "green" }}
-          ></span>
-          <p className={styles.text}>{text}</p>
-        </div>
-        <button type="button" onClick={() => removeTask(id)}>
-          Remove task
-        </button>
+        <ToDoItem
+          changeTaskStatus={() => changeTaskStatus(index)}
+          completed={completed}
+          text={text}
+          removeTask={() => removeTask(id)}
+        />
       </li>
     ))}
   </ul>

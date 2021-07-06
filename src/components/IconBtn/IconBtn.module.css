@@ -1,0 +1,14 @@
+.iconBtn {
+  margin: 0;
+  padding: 10px;
+  border: none;
+  border-radius: 50%;
+  color: aliceblue;
+  border: 1px solid rgb(156, 145, 160);
+  background-color: rgb(227, 214, 231);
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
