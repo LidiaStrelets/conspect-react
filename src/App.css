@@ -1,6 +1,13 @@
 .task-quantity {
   margin: 0;
-  margin-left: 20px;
+}
+.task-quantity:not(:last-child) {
+  margin-bottom: 10px;
+}
+.tasksBox {
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid red;
 }
 form {
   margin: 20px;
@@ -11,4 +18,9 @@ button:disabled {
   background-color: rgb(173, 173, 173);
   color: rgb(110, 110, 110);
   border: none;
+}
+.btnBox {
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid red;
 }

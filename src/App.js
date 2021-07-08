@@ -1,21 +1,23 @@
 import "./App.css";
 import React, { Component } from "react";
-import Counter from "./components/Counter";
-import Dropdown from "./components/Dropdown";
-import ColorPicker from "./components/ColorPicker";
+// import Counter from "./components/Counter";
+// import Dropdown from "./components/Dropdown";
+// import ColorPicker from "./components/ColorPicker";
 import TodoList from "./components/TodoList";
 // import todoItems from "./todoItems.json";
-import colorPickerOptions from "./colorPickerOptions.json";
+// import colorPickerOptions from "./colorPickerOptions.json";
 import Container from "./components/Container";
-import Form from "./components/Form";
+// import Form from "./components/Form";
 import TodoEditor from "./components/TodoEditor";
 import FilterTasks from "./components/FilterTasks";
 import Modal from "./components/Modal";
-import Tabs from "./components/Tabs";
-import tabItems from "./tabs.json";
+// import Tabs from "./components/Tabs";
+// import tabItems from "./tabs.json";
 // import Clock from "./components/Clock";
 import IconBtn from "./components/IconBtn";
 import { ReactComponent as AddIcon } from "./icons/add.svg";
+// import { response } from "express";
+import todoService from "./services/todo-service";
 
 class App extends Component {
   state = {
@@ -25,31 +27,57 @@ class App extends Component {
   };
 
   componentDidMount() {
-    if (localStorage.getItem("toDoList")) {
-      this.setState({
-        todoItems: JSON.parse(localStorage.getItem("toDoList")),
+    // if (localStorage.getItem("toDoList")) {
+    //   this.setState({
+    //     todoItems: JSON.parse(localStorage.getItem("toDoList")),
+    //   });
+    // }
+
+    todoService
+      .fetchTodoItems()
+      .then((todoItems) => {
+        this.setState({
+          todoItems,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    }
   }
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.todoItems !== prevState.todoItems) {
-      // console.log("tasks updated");
-      localStorage.setItem("toDoList", JSON.stringify(this.state.todoItems));
-    }
+    // if (this.state.todoItems !== prevState.todoItems) {
+    //   localStorage.setItem("toDoList", JSON.stringify(this.state.todoItems));
+    // }
+    // if (this.state.todoItems !== prevState.todoItems) {
+    //   axios.(" http://localhost:3000/toDoList");
+    // }
   }
 
   removeTask = (taskId) => {
-    this.setState((prevState) => ({
-      todoItems: prevState.todoItems.filter((item) => item.id !== taskId),
-    }));
+    todoService
+      .removeItem(taskId)
+      .then(() => {
+        this.setState((prevState) => ({
+          todoItems: prevState.todoItems.filter((item) => item.id !== taskId),
+        }));
+      })
+      .catch(console.log);
   };
 
-  changeTaskStatus = (index) => {
-    this.setState((prevState) => ({
-      todoItems: prevState.todoItems.map((item, idx) =>
-        idx === index ? { ...item, completed: !item.completed } : item
-      ),
-    }));
+  changeTaskStatus = (taskId) => {
+    const newStatus = this.state.todoItems.find(({ id }) => id === taskId);
+
+    const dataToUpdate = {
+      completed: !newStatus.completed,
+    };
+
+    todoService.changeItem(taskId, dataToUpdate).then((data) => {
+      this.setState((prevState) => ({
+        todoItems: prevState.todoItems.map((item) =>
+          item.id === data.id ? data : item
+        ),
+      }));
+    });
   };
 
   formSubmit = (data) => {
@@ -57,27 +85,36 @@ class App extends Component {
   };
 
   addTaskToList = (data) => {
-    this.setState((prevState) => {
-      console.log(prevState);
-      return {
-        todoItems: [
-          ...prevState.todoItems,
-          {
-            id:
-              prevState.todoItems.length !== 0
-                ? `id-${
-                    Number(
-                      prevState.todoItems[prevState.todoItems.length - 1].id[3]
-                    ) + 1
-                  }`
-                : "id-1",
-            text: data,
-            completed: false,
-          },
-        ],
-      };
+    const newItem = {
+      text: data,
+      completed: false,
+    };
+
+    todoService.addTask(newItem).then((item) => {
+      this.setState(({ todoItems }) => ({ todoItems: [...todoItems, item] }));
+
+      this.toggleModal();
     });
-    this.toggleModal();
+
+    // this.setState((prevState) => {
+    //   return {
+    //     todoItems: [
+    //       ...prevState.todoItems,
+    //       {
+    //         id:
+    //           prevState.todoItems.length !== 0
+    //             ? `id-${
+    //                 Number(
+    //                   prevState.todoItems[prevState.todoItems.length - 1].id[3]
+    //                 ) + 1
+    //               }`
+    //             : "id-1",
+    //         text: data,
+    //         completed: false,
+    //       },
+    //     ],
+    //   };
+    // });
   };
 
   handleFilter = (event) => {
@@ -104,6 +141,7 @@ class App extends Component {
     return (
       <div className="App">
         <Container>
+          <h1>Component state</h1>
           {/* <Tabs items={tabItems} /> */}
           {/* {showModal && <Clock />} */}
           {showModal && (
@@ -116,18 +154,24 @@ class App extends Component {
             handleFilter={this.handleFilter}
           />
 
-          <Form onSubmitForm={this.formSubmit} />
-          <div>Component state</div>
-          <IconBtn onClick={this.toggleModal} aria-label="Add task to list">
-            <AddIcon width="30px" height="30px" fill="green" />
-          </IconBtn>
-          <TodoList
-            todoItems={this.getFilteredTasks()}
-            removeTask={this.removeTask}
-            changeTaskStatus={this.changeTaskStatus}
-            filter={this.state.filterValue}
-          />
-          <div>
+          {/* <Form onSubmitForm={this.formSubmit} /> */}
+
+          <div className="btnBox">
+            <IconBtn onClick={this.toggleModal} aria-label="Add task to list">
+              <AddIcon width="30px" height="30px" fill="green" />
+            </IconBtn>
+          </div>
+          {this.state.todoItems.length > 0 ? (
+            <TodoList
+              todoItems={this.getFilteredTasks()}
+              removeTask={this.removeTask}
+              changeTaskStatus={this.changeTaskStatus}
+              filter={this.state.filterValue}
+            />
+          ) : (
+            <span>Loading...</span>
+          )}
+          <div className="tasksBox">
             <p className="task-quantity">Tasks in list: {todoItems.length}</p>
             <p className="task-quantity">
               Done:{" "}
@@ -144,9 +188,9 @@ class App extends Component {
               )}
             </p>
           </div>
-          <ColorPicker options={colorPickerOptions} />
-          <Dropdown />
-          <Counter />
+          {/* <ColorPicker options={colorPickerOptions} /> */}
+          {/* <Dropdown /> */}
+          {/* <Counter /> */}
           {/* <button type="button" onClick={this.toggleModal}>
             Show modal
           </button> */}

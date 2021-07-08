@@ -7,7 +7,7 @@ const TodoList = ({ todoItems, removeTask, changeTaskStatus, filter }) => (
     {todoItems.map(({ id, text, completed }, index) => (
       <li key={id} className={styles.item}>
         <ToDoItem
-          changeTaskStatus={() => changeTaskStatus(index)}
+          changeTaskStatus={() => changeTaskStatus(id)}
           completed={completed}
           text={text}
           removeTask={() => removeTask(id)}
